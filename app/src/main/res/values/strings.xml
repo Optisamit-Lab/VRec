@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">VRec</string>
     <string name="action_settings">Settings</string>
+    <string name="record_start">Start</string>
+    <string name="record_resume">Resume</string>
+    <string name="record_pause">Pause</string>
+    <string name="record_stop">Stop</string>
+    <string name="msg_recordingError">Recording error occurred</string>
 </resources>
