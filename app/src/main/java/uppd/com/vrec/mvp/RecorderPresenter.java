@@ -31,5 +31,6 @@ public class RecorderPresenter extends BasePresenter<RecorderContract.RecorderVi
         view.stopRecordingClicked().subscribe(o -> recorder.stop());
         view.pauseRecordingClicked().subscribe(o -> recorder.pause());
         view.resumeRecordingClicked().subscribe(o -> recorder.resume());
+        view.cancelRecordingClicked().subscribe(o -> recorder.cancel());
     }
 }

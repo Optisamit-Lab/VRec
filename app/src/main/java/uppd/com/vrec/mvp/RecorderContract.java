@@ -21,5 +21,7 @@ public interface RecorderContract {
         Observable<?> pauseRecordingClicked();
 
         Observable<?> resumeRecordingClicked();
+
+        Observable<?> cancelRecordingClicked();
     }
 }

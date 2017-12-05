@@ -2,7 +2,10 @@ package uppd.com.vrec.recorder;
 
 import android.media.MediaRecorder;
 import android.support.annotation.IntDef;
+import android.support.annotation.Nullable;
+import android.util.Log;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -30,6 +33,9 @@ public class Recorder {
 
     @RecorderState.State private int state = RecorderState.STATE_IDLE;
 
+    @Nullable
+    private File file;
+
     @Inject
     Recorder(MediaRecorder audioRecorder, FileManager fileManager) {
         this.fileManager = fileManager;
@@ -50,7 +56,9 @@ public class Recorder {
 
     public void startNew() {
         try {
-            audioRecorder.setOutputFile(fileManager.getNewFile().getAbsolutePath());
+            file = fileManager.getNewFile();
+
+            audioRecorder.setOutputFile(file.getAbsolutePath());
             audioRecorder.prepare();
             audioRecorder.start();
             state = RecorderState.STATE_RECORDING;
@@ -65,6 +73,9 @@ public class Recorder {
         try {
             audioRecorder.stop();
             initRecorder();
+
+            file = null;
+
             state = RecorderState.STATE_IDLE;
             observable.onNext(adaptRecorderState());
         } catch (IllegalStateException e) {
@@ -92,6 +103,15 @@ public class Recorder {
         } catch (IllegalStateException e) {
             state = RecorderState.STATE_ERROR;
             observable.onError(new RecordingException(e));
+        }
+    }
+
+    public void cancel() {
+        final File file = this.file;
+        assert file != null;
+        stop();
+        if (!file.delete()) {
+            Log.w(TAG, "Failed to delete file");
         }
     }
 

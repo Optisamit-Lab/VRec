@@ -6,4 +6,5 @@
     <string name="record_pause">Pause</string>
     <string name="record_stop">Stop</string>
     <string name="msg_recordingError">Recording error occurred</string>
+    <string name="record_cancel">Cancel</string>
 </resources>

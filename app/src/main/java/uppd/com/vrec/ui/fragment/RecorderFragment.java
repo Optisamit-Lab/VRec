@@ -103,4 +103,9 @@ public class RecorderFragment extends BaseFragment<FragmentRecorderBinding> impl
                 .compose(new RxPermissions(getActivity()).ensure(Manifest.permission.RECORD_AUDIO))
                 .filter(granted -> granted);
     }
+
+    @Override
+    public Observable<?> cancelRecordingClicked() {
+        return RxView.clicks(binding.btnCancel);
+    }
 }
