@@ -27,10 +27,10 @@ public class RecorderPresenter extends BasePresenter<RecorderContract.RecorderVi
         super.takeView(view);
         recorder.recorderState().subscribe(view, t -> Log.w(TAG, t));
 
-        view.startRecordingClicked().subscribe(o -> recorder.startNew());
-        view.stopRecordingClicked().subscribe(o -> recorder.stop());
-        view.pauseRecordingClicked().subscribe(o -> recorder.pause());
-        view.resumeRecordingClicked().subscribe(o -> recorder.resume());
-        view.cancelRecordingClicked().subscribe(o -> recorder.cancel());
+        view.startRecordingClicked().subscribe(getObserver(recorder::startNew));
+        view.stopRecordingClicked().subscribe(getObserver(recorder::stop));
+        view.pauseRecordingClicked().subscribe(getObserver(recorder::pause));
+        view.resumeRecordingClicked().subscribe(getObserver(recorder::resume));
+        view.cancelRecordingClicked().subscribe(getObserver(recorder::cancel));
     }
 }

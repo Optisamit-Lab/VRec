@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context="uppd.com.vrec.ui.fragment.RecorderFragment"
-        tools:showIn="@layout/activity_main">
+        tools:showIn="@layout/activity_single_fragment">
 
 
         <Button
@@ -16,7 +16,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:text="Button"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 

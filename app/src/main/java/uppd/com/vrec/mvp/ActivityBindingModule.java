@@ -5,6 +5,7 @@ import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
 import uppd.com.vrec.di.ActivityScoped;
 import uppd.com.vrec.ui.activity.MainActivity;
+import uppd.com.vrec.ui.activity.SettingsActivity;
 
 /**
  * We want Dagger.Android to create a Subcomponent which has a parent Component of whichever module ActivityBindingModule is on,
@@ -17,4 +18,8 @@ public abstract class ActivityBindingModule {
     @ActivityScoped
     @ContributesAndroidInjector(modules = RecorderModule.class)
     abstract MainActivity addMainActivity();
+
+    @ActivityScoped
+    @ContributesAndroidInjector
+    abstract SettingsActivity addSettingsActivity();
 }
