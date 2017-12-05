@@ -40,7 +40,6 @@ public class Recorder {
     Recorder(MediaRecorder audioRecorder, FileManager fileManager) {
         this.fileManager = fileManager;
         this.audioRecorder = audioRecorder;
-        initRecorder();
         observable = BehaviorSubject.createDefault(adaptRecorderState());
     }
 
@@ -55,6 +54,7 @@ public class Recorder {
     }
 
     public void startNew() {
+        initRecorder();
         try {
             file = fileManager.getNewFile();
 
@@ -72,7 +72,6 @@ public class Recorder {
     public void stop() {
         try {
             audioRecorder.stop();
-            initRecorder();
 
             file = null;
 

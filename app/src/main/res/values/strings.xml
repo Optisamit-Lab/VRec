@@ -7,4 +7,14 @@
     <string name="record_stop">Stop</string>
     <string name="msg_recordingError">Recording error occurred</string>
     <string name="record_cancel">Cancel</string>
+    <string name="settings_smtp">SMTP settings</string>
+    <string name="key_smtp_checkCertificate">smtpCheckCertificate</string>
+    <string name="pref_smtp_checkCertificate">Check certificate</string>
+    <string name="pref_smtp_connectionType">Connection type</string>
+
+    <string name="pref_smtp_ConnectionType_clear">Clear</string>
+    <string name="pref_smtp_ConnectionType_tls">TLS</string>
+    <string name="pref_smtp_ConnectionType_startTls">StartTLS</string>
+    <string name="key_smtp">smtp</string>
+    <string name="key_smtp_connectionType">smtp_connectionType</string>
 </resources>

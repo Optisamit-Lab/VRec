@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-
+    <PreferenceScreen
+        android:key="@string/key_smtp"
+        android:title="@string/settings_smtp">
+        <CheckBoxPreference
+            android:defaultValue="@bool/pref_smtp_checkCertificate"
+            android:key="@string/key_smtp_checkCertificate"
+            android:title="@string/pref_smtp_checkCertificate"/>
+        <ListPreference
+            android:dialogTitle="@string/pref_smtp_connectionType"
+            android:key="@string/key_smtp_connectionType"
+            android:title="@string/pref_smtp_connectionType"/>
+    </PreferenceScreen>
 </PreferenceScreen>
