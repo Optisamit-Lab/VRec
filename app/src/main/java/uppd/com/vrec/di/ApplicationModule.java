@@ -3,8 +3,13 @@ package uppd.com.vrec.di;
 import android.app.Application;
 import android.content.Context;
 
+import com.birbit.android.jobqueue.JobManager;
+import com.birbit.android.jobqueue.config.Configuration;
+
 import dagger.Binds;
 import dagger.Module;
+import dagger.Provides;
+import uppd.com.vrec.service.RecordingsManager;
 
 /**
  * Created by o.rabinovych on 12/4/17.
@@ -22,4 +27,16 @@ public abstract class ApplicationModule {
     //expose Application as an injectable context
     @Binds
     abstract Context bindContext(Application application);
+
+    @Provides
+    static JobManager provideJobManager(Context context) {
+        final Configuration conf = new Configuration.Builder(context)
+                .build();
+        return new JobManager(conf);
+    }
+
+    @Provides
+    static RecordingsManager provideRecordingsManager(Context context, JobManager jobManager) {
+        return new RecordingsManager(context, jobManager);
+    }
 }

@@ -30,10 +30,13 @@ public class MainActivity extends SingleFragmentActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            startActivity(new Intent(this, SettingsActivity.class));
-            return true;
+        switch (id) {
+            case R.id.action_settings:
+                startActivity(new Intent(this, SettingsActivity.class));
+                return true;
+            case R.id.action_viewList:
+                startActivity(new Intent(this, ListRecordingsActivity.class));
+                return true;
         }
 
         return super.onOptionsItemSelected(item);

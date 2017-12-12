@@ -9,11 +9,12 @@ import java.util.Date;
 import java.util.Locale;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /**
  * Created by o.rabinovych on 12/4/17.
  */
-
+@Singleton
 public class FileManager {
     private static final DateFormat FILE_NAME_FORMAT = new SimpleDateFormat("yyyMMdd-HHmmss", Locale.US);
     private final Context context;

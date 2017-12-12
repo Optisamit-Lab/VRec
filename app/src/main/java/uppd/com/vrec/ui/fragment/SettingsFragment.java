@@ -4,37 +4,45 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v7.preference.EditTextPreference;
 import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceScreen;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import com.jakewharton.rxbinding2.view.RxView;
+import com.libmailcore.Address;
 import com.libmailcore.ConnectionType;
+import com.libmailcore.MailException;
+import com.libmailcore.OperationCallback;
+import com.libmailcore.SMTPSession;
 
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.Spliterator;
-import java.util.Spliterators;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import uppd.com.vrec.R;
+import uppd.com.vrec.service.RecordingsManager;
+import uppd.com.vrec.smtp.SmtpHelper;
 
 /**
  * Created by o.rabinovych on 12/5/17.
  */
 
-public class SettingsFragment extends PreferenceFragmentCompat implements PreferenceFragmentCompat.OnPreferenceStartScreenCallback {
+public class SettingsFragment extends PreferenceFragmentCompat implements PreferenceFragmentCompat.OnPreferenceStartScreenCallback, PreferenceFragmentCompat.OnPreferenceDisplayDialogCallback {
     private static final int[] CONNECTION_TYPES = {
             ConnectionType.ConnectionTypeClear,
             ConnectionType.ConnectionTypeTLS,
             ConnectionType.ConnectionTypeStartTLS
     };
-    private static final int DEFAULT_CONNECTION_TYPE = ConnectionType.ConnectionTypeClear;
+    private static final String DIALOG_FRAGMENT_TAG = "dft";
 
     private boolean showingRootPrefs;
 
@@ -89,7 +97,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
         };
     }
 
-    private String mapValueToSummary(ListPreference pref, String value) {
+    private String mapConnTypeValueToSummary(Preference pref, String value) {
         if (pref.getKey().equals(getString(R.string.key_smtp_connectionType))) {
             @StringRes final int strRes;
             switch (Integer.valueOf(value)) {
@@ -111,31 +119,8 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
         }
     }
 
-    @Override
-    protected void onBindPreferences() {
-        this.<ListPreference>onPref(R.string.key_smtp_connectionType, pref -> {
-            pref.setEntryValues(Arrays.stream(CONNECTION_TYPES).mapToObj(Integer::toString).toArray(String[]::new));
-            pref.setEntries(Arrays.stream(CONNECTION_TYPES).mapToObj(connType -> mapValueToSummary(pref, Integer.toString(connType))).toArray(String[]::new));
-            if (pref.getValue() == null) {
-                pref.setValue(Integer.toString(DEFAULT_CONNECTION_TYPE));
-            }
-        });
-
-        final Iterator<Preference> prefsIterator = getPrefsIterator(getPreferenceScreen());
-        StreamSupport.stream(Spliterators.spliteratorUnknownSize(prefsIterator, Spliterator.ORDERED), false)
-                .filter(p -> p instanceof ListPreference)
-                .map(p -> (ListPreference) p)
-                .forEach(pref -> {
-                    pref.setSummary(mapValueToSummary(pref, pref.getValue()));
-                    pref.setOnPreferenceChangeListener((preference, newValue) -> {
-                        preference.setSummary(mapValueToSummary((ListPreference)preference, (String) newValue));
-                        return true;
-                    });
-                });
-    }
-
     private <T extends Preference> void onPref(@StringRes int prefKeyRes, Consumer<T> consumer) {
-        final Preference pref = findPreference(getString(prefKeyRes));
+        final Preference pref = findPreference(prefKeyRes);
         if (pref != null) {
             //noinspection unchecked
             consumer.accept((T) pref);
@@ -145,6 +130,91 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
     private void setRootPreferences() {
         setPreferencesFromResource(R.xml.preferences, null);
         showingRootPrefs = true;
+
+        this.<ListPreference>onPref(R.string.key_smtp_connectionType, pref -> {
+            pref.setEntryValues(Arrays.stream(CONNECTION_TYPES)
+                    .mapToObj(Integer::toString)
+                    .toArray(String[]::new));
+            pref.setEntries(Arrays.stream(CONNECTION_TYPES)
+                    .mapToObj(connType -> mapConnTypeValueToSummary(pref, Integer.toString(connType)))
+                    .toArray(String[]::new));
+
+            if (pref.getValue() == null) {
+                pref.setValue(Integer.toString(SmtpHelper.DEFAULT_CONN_TYPE));
+            }
+
+            pref.setSummary(mapConnTypeValueToSummary(pref, pref.getValue()));
+            pref.setOnPreferenceChangeListener((preference, newValue) -> {
+                preference.setSummary(mapConnTypeValueToSummary(preference, (String) newValue));
+                return true;
+            });
+        });
+
+        this.<ListPreference>onPref(R.string.key_deleteRecordingsAfter, pref -> {
+            pref.setEntryValues(Stream.of(RecordingsManager.DeleteAfter.values())
+                    .map(RecordingsManager.DeleteAfter::name)
+                    .toArray(CharSequence[]::new));
+            pref.setEntries(Stream.of(RecordingsManager.DeleteAfter.values())
+                    .map(value -> getString(value.getStrRes()))
+                    .toArray(CharSequence[]::new));
+
+            if (pref.getValue() == null) {
+                pref.setValue(RecordingsManager.DeleteAfter.Immediately.name());
+            }
+
+            pref.setSummary(getString(RecordingsManager.DeleteAfter.valueOf(pref.getValue()).getStrRes()));
+            pref.setOnPreferenceChangeListener((preference, newValue) -> {
+                preference.setSummary(getString(RecordingsManager.DeleteAfter.valueOf(pref.getValue()).getStrRes()));
+                return true;
+            });
+        });
+
+        final Iterable<Preference> prefsIterator = () -> getPrefsIterator(getPreferenceScreen());
+        StreamSupport.stream(prefsIterator.spliterator(), false)
+                .filter(pref -> pref instanceof EditTextPreference)
+                .filter(pref -> !pref.getKey().equals(getString(R.string.key_smtp_password)))
+                .map(pref -> (EditTextPreference) pref)
+                .forEach(pref -> {
+                    pref.setSummary(pref.getText());
+                    pref.setOnPreferenceChangeListener((preference, newValue) -> {
+                        preference.setSummary((CharSequence) newValue);
+                        return true;
+                    });
+                });
+
+        onPref(R.string.key_smtp_test, preference -> preference.setOnPreferenceClickListener(pref -> {
+            startSmtpTest();
+            preference.setEnabled(false);
+            return true;
+        }));
+    }
+
+    private void startSmtpTest() {
+        final SMTPSession session = SmtpHelper.createSmtpSession(getContext());
+        session.checkAccountOperation(Address.addressWithMailbox(getEmail())).start(new OperationCallback() {
+            @Override
+            public void succeeded() {
+                onPref(R.string.key_smtp_test, pref -> pref.setEnabled(true));
+                Toast.makeText(getContext(), R.string.msg_smtp_connection_good, Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void failed(MailException e) {
+                onPref(R.string.key_smtp_test, pref -> pref.setEnabled(true));
+                e.printStackTrace();
+                final String errorDescription = SmtpHelper.getErrorDescription(e);
+                Toast.makeText(getContext(), errorDescription != null ? errorDescription : getString(R.string.msg_smtp_unknown_error, e.errorCode()), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private String getEmail() {
+        return getPreferenceManager().getSharedPreferences().getString(getString(R.string.key_smtp_email), "");
+    }
+
+    private <T extends Preference> T findPreference(@StringRes int prefNameRes) {
+        //noinspection unchecked
+        return (T) findPreference(getString(prefNameRes));
     }
 
     @Override
@@ -160,5 +230,21 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
             return true;
         }
         return false;
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    @Override
+    public boolean onPreferenceDisplayDialog(@NonNull PreferenceFragmentCompat caller, Preference pref) {
+        if (pref instanceof EditTextPreference) {
+            if (caller.getFragmentManager().findFragmentByTag(DIALOG_FRAGMENT_TAG) == null) {
+                final DialogFragment fragment = CustomEditTextPreferenceFragment.instantiate(pref);
+                fragment.setTargetFragment(this, 0);
+                fragment.show(getFragmentManager(), DIALOG_FRAGMENT_TAG);
+            }
+
+            return true;
+        } else {
+            return false;
+        }
     }
 }

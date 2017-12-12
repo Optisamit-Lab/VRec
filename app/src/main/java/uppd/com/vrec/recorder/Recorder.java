@@ -69,7 +69,9 @@ public class Recorder {
         }
     }
 
-    public void stop() {
+    public File stop() {
+        final File result = file;
+
         try {
             audioRecorder.stop();
 
@@ -81,6 +83,8 @@ public class Recorder {
             state = RecorderState.STATE_ERROR;
             observable.onError(new RecordingException(e));
         }
+
+        return result;
     }
 
     public void pause() {

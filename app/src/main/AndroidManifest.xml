@@ -4,6 +4,7 @@
           package="uppd.com.vrec">
 
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:name=".App"
@@ -24,6 +25,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.activity.SettingsActivity"/>
+        <activity android:name=".ui.activity.ListRecordingsActivity"/>
     </application>
 
 </manifest>

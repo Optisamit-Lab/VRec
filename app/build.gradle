@@ -52,7 +52,10 @@ dependencies {
     implementation 'com.tbruyelle.rxpermissions2:rxpermissions:0.9.4@aar'
 
     // smtp
-    compile fileTree(dir: 'libs', include: ['*.aar'])
+    implementation fileTree(dir: 'libs', include: ['*.aar'])
+
+    // job queue
+    implementation 'com.birbit:android-priority-jobqueue:2.0.1'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
