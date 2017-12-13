@@ -25,6 +25,14 @@ public class FileManager {
     }
 
     public File getNewFile() {
-        return new File(context.getExternalFilesDir(null), FILE_NAME_FORMAT.format(new Date()) + ".aac");
+        return new File(getRecDir(), FILE_NAME_FORMAT.format(new Date()) + ".aac");
+    }
+
+    private File getRecDir() {
+        return context.getExternalFilesDir(null);
+    }
+
+    public File[] getAllFiles() {
+        return getRecDir().listFiles();
     }
 }

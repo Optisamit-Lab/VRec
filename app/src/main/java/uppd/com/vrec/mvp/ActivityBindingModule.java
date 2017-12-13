@@ -4,6 +4,7 @@ package uppd.com.vrec.mvp;
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
 import uppd.com.vrec.di.ActivityScoped;
+import uppd.com.vrec.ui.activity.ListRecordingsActivity;
 import uppd.com.vrec.ui.activity.MainActivity;
 import uppd.com.vrec.ui.activity.SettingsActivity;
 
@@ -18,6 +19,10 @@ public abstract class ActivityBindingModule {
     @ActivityScoped
     @ContributesAndroidInjector(modules = RecorderModule.class)
     abstract MainActivity addMainActivity();
+
+    @ActivityScoped
+    @ContributesAndroidInjector(modules = ListRecordingsModule.class)
+    abstract ListRecordingsActivity addListRecordingsActivity();
 
     @ActivityScoped
     @ContributesAndroidInjector

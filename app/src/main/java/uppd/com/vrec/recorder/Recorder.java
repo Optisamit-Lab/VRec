@@ -23,6 +23,8 @@ import uppd.com.vrec.exception.RecordingException;
  */
 
 public class Recorder {
+    public final static String MIME_TYPE = "audio/aac";
+
     @SuppressWarnings("unused")
     private static final String TAG = Recorder.class.getSimpleName();
 

@@ -8,15 +8,23 @@ import android.support.v7.preference.PreferenceManager;
 
 import com.birbit.android.jobqueue.Job;
 import com.birbit.android.jobqueue.JobManager;
+import com.birbit.android.jobqueue.JobStatus;
 import com.birbit.android.jobqueue.callback.JobManagerCallback;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import lombok.Getter;
 import uppd.com.vrec.R;
+import uppd.com.vrec.event.RecordingAddedEvent;
+import uppd.com.vrec.event.RecordingSentEvent;
+import uppd.com.vrec.model.Recording;
 
 /**
  * Created by o.rabinovych on 12/11/17.
@@ -27,6 +35,8 @@ public class RecordingsManager implements JobManagerCallback {
     private Context context;
 
     private JobManager jobManager;
+
+    private Set<File> sentFiles = new HashSet<>();
 
     @Inject
     public RecordingsManager(Context context, JobManager jobManager) {
@@ -44,6 +54,10 @@ public class RecordingsManager implements JobManagerCallback {
 
     @Override
     public void onJobAdded(@NonNull Job job) {
+        if (job instanceof SendMailJob) {
+            final File file = ((SendMailJob) job).getFile();
+            EventBus.getDefault().post(new RecordingAddedEvent(new Recording(file, false)));
+        }
     }
 
     @Override
@@ -61,6 +75,12 @@ public class RecordingsManager implements JobManagerCallback {
     @Override
     public void onAfterJobRun(@NonNull Job job, int resultCode) {
         if (job instanceof SendMailJob && resultCode == JobManagerCallback.RESULT_SUCCEED) {
+            final File file = ((SendMailJob) job).getFile();
+
+            sentFiles.add(file);
+
+            EventBus.getDefault().post(new RecordingSentEvent(file));
+
             final DeleteAfter deleteAfter = DeleteAfter.valueOf(PreferenceManager.getDefaultSharedPreferences(context)
                     .getString(context.getString(R.string.key_deleteRecordingsAfter), ""));
 
@@ -78,8 +98,12 @@ public class RecordingsManager implements JobManagerCallback {
                     return;
             }
 
-            jobManager.addJobInBackground(new DeleteRecordingJob(((SendMailJob)job).getFile(), deleteDelayMs));
+            jobManager.addJobInBackground(new DeleteRecordingJob(file, deleteDelayMs));
         }
+    }
+
+    public boolean isSent(File file) {
+        return sentFiles.contains(file);
     }
 
     public enum DeleteAfter {

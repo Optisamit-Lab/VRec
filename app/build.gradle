@@ -9,6 +9,10 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        def filesAuthorityValue = applicationId + ".files"
+        manifestPlaceholders = [filesAuthority : filesAuthorityValue]
+        buildConfigField "String", "FILES_AUTHORITY", "\"${filesAuthorityValue}\""
     }
     buildTypes {
         release {
@@ -35,6 +39,7 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     implementation "com.android.support:design:${supportLibVersion}"
     implementation "com.android.support:preference-v7:$supportLibVersion"
+    implementation "com.android.support:recyclerview-v7:$supportLibVersion"
 
     // di
     implementation"com.google.dagger:dagger-android-support:${daggerVersion}"
@@ -56,6 +61,9 @@ dependencies {
 
     // job queue
     implementation 'com.birbit:android-priority-jobqueue:2.0.1'
+
+    // event bus
+    implementation 'org.greenrobot:eventbus:3.1.1'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
