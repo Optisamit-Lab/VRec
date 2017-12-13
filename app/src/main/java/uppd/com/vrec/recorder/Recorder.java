@@ -5,6 +5,8 @@ import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Retention;
@@ -17,6 +19,7 @@ import io.reactivex.subjects.BehaviorSubject;
 import io.reactivex.subjects.Subject;
 import lombok.RequiredArgsConstructor;
 import uppd.com.vrec.exception.RecordingException;
+import uppd.com.vrec.model.Recording;
 
 /**
  * Created by o.rabinovych on 12/4/17.

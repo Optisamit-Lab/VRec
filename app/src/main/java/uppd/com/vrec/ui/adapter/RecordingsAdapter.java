@@ -3,7 +3,6 @@ package uppd.com.vrec.ui.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +14,11 @@ import java.io.File;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import io.reactivex.Completable;
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.subjects.PublishSubject;
+import io.reactivex.subjects.Subject;
 import uppd.com.vrec.BuildConfig;
 import uppd.com.vrec.R;
 import uppd.com.vrec.databinding.ItemRecordingBinding;
@@ -29,6 +33,9 @@ import uppd.com.vrec.service.VRecFileProvider;
 public class RecordingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<Recording> recordings;
     private Context context;
+
+    private Subject<Recording> sendClicksSubject = PublishSubject.create();
+    private Subject<Recording> deleteClicksSubject = PublishSubject.create();
 
     public RecordingsAdapter(Context context) {
         this.context = context;
@@ -46,7 +53,12 @@ public class RecordingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.item_recording, parent, false).getRoot());
+        final ViewHolder viewHolder = new ViewHolder(DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.item_recording, parent, false).getRoot());
+
+        viewHolder.sendClicks().subscribe(sendClicksSubject);
+        viewHolder.deleteClicks().subscribe(deleteClicksSubject);
+
+        return viewHolder;
     }
 
     @Override
@@ -74,9 +86,18 @@ public class RecordingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 });
     }
 
-    public void addRecording(Recording recording) {
-        recordings.add(recording);
-        notifyItemInserted(recordings.size() - 1);
+    public Observable<Recording> sendClicks() {
+        return sendClicksSubject;
+    }
+
+    public Observable<Recording> deleteClicks() {
+        return deleteClicksSubject;
+    }
+
+    public void onRecordingDeleted(Recording recording) {
+        final int position = recordings.indexOf(recording);
+        recordings.remove(position);
+        notifyItemRemoved(position);
     }
 
     private static class ViewHolder extends RecyclerView.ViewHolder{
@@ -98,6 +119,16 @@ public class RecordingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         public void bind(Recording item) {
             binding.setItem(item);
+        }
+
+        public ObservableSource<? extends Recording> sendClicks() {
+            return RxView.clicks(binding.btnSend)
+                    .map(o -> binding.getItem());
+        }
+
+        public ObservableSource<? extends Recording> deleteClicks() {
+            return RxView.clicks(binding.btnDelete)
+                    .map(o -> binding.getItem());
         }
     }
 }

@@ -29,7 +29,7 @@ class DeleteRecordingJob extends Job{
 
     @Override
     public void onRun() throws Throwable {
-        if (!file.delete()) {
+        if (file.exists() && !file.delete()) {
             throw new RuntimeException("Failed to delete file " + file);
         }
     }

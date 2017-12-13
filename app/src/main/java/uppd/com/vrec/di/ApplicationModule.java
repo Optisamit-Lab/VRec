@@ -6,6 +6,8 @@ import android.content.Context;
 import com.birbit.android.jobqueue.JobManager;
 import com.birbit.android.jobqueue.config.Configuration;
 
+import javax.inject.Singleton;
+
 import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
@@ -36,6 +38,7 @@ public abstract class ApplicationModule {
     }
 
     @Provides
+    @Singleton
     static RecordingsManager provideRecordingsManager(Context context, JobManager jobManager) {
         return new RecordingsManager(context, jobManager);
     }

@@ -48,16 +48,21 @@ class SendMailJob extends Job {
     private final OperationCallback sendCallback = new SendCallback();
 
     public SendMailJob(File file, boolean onWiFiOnly) {
-        super(getParams(onWiFiOnly));
+        super(getParams(file, onWiFiOnly));
         this.file = file;
     }
 
-    private static Params getParams(boolean onWiFiOnly) {
+    private static Params getParams(File file, boolean onWiFiOnly) {
         final Params params = new Params(0)
                 .setPersistent(true)
                 .requireNetwork()
+                .addTags(getTag(file))
                 .setGroupId(GROUP_ID);
         return onWiFiOnly ? params.requireUnmeteredNetwork() : params;
+    }
+
+    public static String getTag(File file) {
+        return "send " + file.getAbsolutePath();
     }
 
     @Override

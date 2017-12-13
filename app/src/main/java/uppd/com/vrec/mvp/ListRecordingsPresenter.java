@@ -10,7 +10,6 @@ import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
-import uppd.com.vrec.event.RecordingAddedEvent;
 import uppd.com.vrec.event.RecordingSentEvent;
 import uppd.com.vrec.model.Recording;
 import uppd.com.vrec.recorder.FileManager;
@@ -39,11 +38,6 @@ public class ListRecordingsPresenter extends BasePresenter<ListRecordingsContrac
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onRecordingAdded(RecordingAddedEvent event) {
-        view.onRecordingAdded(event.getRecording());
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRecordingSent(RecordingSentEvent event) {
         view.onFileSent(event.getFile());
     }
@@ -58,5 +52,16 @@ public class ListRecordingsPresenter extends BasePresenter<ListRecordingsContrac
     public void dropView() {
         EventBus.getDefault().unregister(this);
         super.dropView();
+    }
+
+    @Override
+    public void onSendClicked(Recording recording) {
+        recordingsManager.sendNow(recording.getFile());
+    }
+
+    @Override
+    public void onDeleteClicked(Recording recording) {
+        recordingsManager.deleteRecording(recording.getFile());
+        view.onRecordingDeleted(recording);
     }
 }

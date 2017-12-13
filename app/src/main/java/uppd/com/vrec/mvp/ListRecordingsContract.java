@@ -11,12 +11,15 @@ import uppd.com.vrec.model.Recording;
 
 public interface ListRecordingsContract {
     interface Presenter extends IPresenter<View> {
+        void onSendClicked(Recording recording);
+
+        void onDeleteClicked(Recording recording);
     }
     interface View{
         void setList(List<Recording> recordings);
 
         void onFileSent(File file);
 
-        void onRecordingAdded(Recording recording);
+        void onRecordingDeleted(Recording recording);
     }
 }

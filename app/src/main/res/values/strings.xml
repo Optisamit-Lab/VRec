@@ -43,4 +43,6 @@
     <string name="pref_deleteAfter_immediately">When sent</string>
     <string name="pref_deleteAfter_week">After one week</string>
     <string name="action_viewList">View recordings</string>
+    <string name="msg_file_sent">File sent</string>
+    <string name="msg_sending_file">Sending file…</string>
 </resources>
