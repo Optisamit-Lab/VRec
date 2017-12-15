@@ -3,4 +3,5 @@
     <color name="colorPrimary">#0C4D8F</color>
     <color name="colorPrimaryDark">#002661</color>
     <color name="colorAccent">#5badff</color>
+    <color name="cancelBtnIcon">#840909</color>
 </resources>

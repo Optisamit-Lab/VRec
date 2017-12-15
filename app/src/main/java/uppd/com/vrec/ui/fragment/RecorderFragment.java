@@ -64,11 +64,18 @@ public class RecorderFragment extends BaseFragment<FragmentRecorderBinding> impl
                     Toast.makeText(getContext(), R.string.msg_recordingError, Toast.LENGTH_SHORT).show();
                     // FALLTHROUGH
                 case Recorder.RecorderState.STATE_IDLE:
+                    binding.btnPause.setVisibility(View.GONE);
+                    binding.btnCancel.setVisibility(View.GONE);
+                    // FALLTHROUGH
                 case Recorder.RecorderState.STATE_PAUSED:
                     binding.btnRec.setActivated(false);
+                    binding.btnPause.setEnabled(false);
                     break;
                 case Recorder.RecorderState.STATE_RECORDING:
                     binding.btnRec.setActivated(true);
+                    binding.btnPause.setVisibility(View.VISIBLE);
+                    binding.btnCancel.setVisibility(View.VISIBLE);
+                    binding.btnPause.setEnabled(true);
                     break;
                 default:
                     throw new IllegalArgumentException();
@@ -87,12 +94,13 @@ public class RecorderFragment extends BaseFragment<FragmentRecorderBinding> impl
 
     @Override
     public Observable<?> stopRecordingClicked() {
-        return RxView.clicks(binding.btnStop);
+        return btnRecClicks
+                .filter(o -> recorderState.getState() == Recorder.RecorderState.STATE_RECORDING);
     }
 
     @Override
     public Observable<?> pauseRecordingClicked() {
-        return btnRecClicks
+        return RxView.clicks(binding.btnPause)
                 .filter(o -> recorderState.getState() == Recorder.RecorderState.STATE_RECORDING);
     }
 
