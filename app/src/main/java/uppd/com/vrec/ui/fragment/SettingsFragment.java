@@ -29,6 +29,8 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import uppd.com.vrec.R;
+import uppd.com.vrec.recorder.FileManager;
+import uppd.com.vrec.recorder.FileManager_Factory;
 import uppd.com.vrec.service.RecordingsManager;
 import uppd.com.vrec.smtp.SmtpHelper;
 
@@ -164,9 +166,28 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
 
             pref.setSummary(getString(RecordingsManager.DeleteAfter.valueOf(pref.getValue()).getStrRes()));
             pref.setOnPreferenceChangeListener((preference, newValue) -> {
-                preference.setSummary(getString(RecordingsManager.DeleteAfter.valueOf(pref.getValue()).getStrRes()));
+                preference.setSummary(getString(RecordingsManager.DeleteAfter.valueOf((String)newValue).getStrRes()));
                 return true;
             });
+        });
+
+        this.<ListPreference>onPref(R.string.key_storeTo, pref -> {
+            if (FileManager_Factory.create(this::getContext).get().extStorageAvailable()) {
+                pref.setEntryValues(new CharSequence[]{String.valueOf(FileManager.STORE_TO_INTERNAL), String.valueOf(FileManager.STORE_TO_EXTERNAL)});
+                pref.setEntries(new CharSequence[]{getString(R.string.pref_storeTo_internal), getString(R.string.pref_storeTo_external)});
+
+                if (pref.getValue() == null) {
+                    pref.setValue(String.valueOf(FileManager.STORE_TO_INTERNAL));
+                }
+
+                pref.setSummary(getString(pref.getValue().equals(String.valueOf(FileManager.STORE_TO_INTERNAL)) ? R.string.pref_storeTo_internal : R.string.pref_storeTo_external));
+                pref.setOnPreferenceChangeListener((preference, newValue) -> {
+                    preference.setSummary(getString(newValue.equals(String.valueOf(FileManager.STORE_TO_INTERNAL)) ? R.string.pref_storeTo_internal : R.string.pref_storeTo_external));
+                    return true;
+                });
+            } else {
+                pref.setVisible(false);
+            }
         });
 
         final Iterable<Preference> prefsIterator = () -> getPrefsIterator(getPreferenceScreen());

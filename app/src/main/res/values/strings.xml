@@ -52,4 +52,8 @@
     <string name="cd_send">Send</string>
     <string name="itemSent">Sent</string>
     <string name="itemNotSent">Not sent</string>
+    <string name="pref_storeTo">Store recordings to</string>
+    <string name="key_storeTo">storeTo</string>
+    <string name="pref_storeTo_external">SD card</string>
+    <string name="pref_storeTo_internal">Internal storage</string>
 </resources>

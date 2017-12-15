@@ -43,4 +43,8 @@
         android:dialogTitle="@string/pref_deleteAfter"
         android:key="@string/key_deleteRecordingsAfter"
         android:title="@string/pref_deleteAfter"/>
+    <ListPreference
+        android:dialogTitle="@string/pref_storeTo"
+        android:key="@string/key_storeTo"
+        android:title="@string/pref_storeTo"/>
 </PreferenceScreen>

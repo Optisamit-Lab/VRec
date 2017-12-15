@@ -3,4 +3,7 @@
     <external-files-path
         name="recordings"
         path="/"/>
+    <files-path
+        name="rec_internal"
+        path="/" />
 </paths>
