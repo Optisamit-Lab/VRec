@@ -36,7 +36,8 @@ public class Recorder {
 
     private Subject<RecorderState> observable;
 
-    @RecorderState.State private int state = RecorderState.STATE_IDLE;
+    @RecorderState.State
+    private int state = RecorderState.STATE_IDLE;
 
     @Nullable
     private File file;
@@ -67,10 +68,13 @@ public class Recorder {
             audioRecorder.prepare();
             audioRecorder.start();
             state = RecorderState.STATE_RECORDING;
-            observable.onNext(adaptRecorderState());
         } catch (IllegalStateException | IOException e) {
             state = RecorderState.STATE_ERROR;
-            observable.onError(new RecordingException(e));
+            observable.onNext(adaptRecorderState());
+            audioRecorder.reset();
+            state = RecorderState.STATE_IDLE;
+        } finally {
+            observable.onNext(adaptRecorderState());
         }
     }
 
@@ -78,16 +82,19 @@ public class Recorder {
         final File result = file;
 
         try {
+            if (state == RecorderState.STATE_PAUSED) {
+                audioRecorder.resume();
+                // If we don't do this, the recorder freezes. At least on Nexus 5x
+            }
             audioRecorder.stop();
 
             file = null;
 
             state = RecorderState.STATE_IDLE;
-            observable.onNext(adaptRecorderState());
         } catch (IllegalStateException e) {
             state = RecorderState.STATE_ERROR;
-            observable.onError(new RecordingException(e));
         }
+        observable.onNext(adaptRecorderState());
 
         return result;
     }
@@ -96,22 +103,20 @@ public class Recorder {
         try {
             audioRecorder.pause();
             state = RecorderState.STATE_PAUSED;
-            observable.onNext(adaptRecorderState());
         } catch (IllegalStateException e) {
             state = RecorderState.STATE_ERROR;
-            observable.onError(new RecordingException(e));
         }
+        observable.onNext(adaptRecorderState());
     }
 
     public void resume() {
         try {
             audioRecorder.resume();
-            state =RecorderState.STATE_RECORDING;
-            observable.onNext(adaptRecorderState());
+            state = RecorderState.STATE_RECORDING;
         } catch (IllegalStateException e) {
             state = RecorderState.STATE_ERROR;
-            observable.onError(new RecordingException(e));
         }
+        observable.onNext(adaptRecorderState());
     }
 
     public void cancel() {

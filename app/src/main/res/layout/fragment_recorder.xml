@@ -6,18 +6,10 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
         tools:context="uppd.com.vrec.ui.fragment.RecorderFragment"
         tools:showIn="@layout/activity_single_fragment">
 
-
-        <Button
-            android:id="@+id/btnRec"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
 
         <Button
             android:id="@+id/btnStop"
@@ -50,7 +42,7 @@
             app:layout_constraintTop_toBottomOf="@+id/btnPause"/>
 
         <android.support.design.widget.FloatingActionButton
-            android:id="@+id/floatingActionButton"
+            android:id="@+id/btnRec"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
@@ -58,12 +50,13 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:clickable="true"
+            android:focusable="true"
             app:fabSize="normal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_mic_black_107dp"
-            android:focusable="true"/>
+            app:srcCompat="@drawable/rec_btn_img"
+            app:tint="@android:color/white"/>
     </android.support.constraint.ConstraintLayout>
 </layout>

@@ -30,7 +30,7 @@ public class RecorderPresenter extends BasePresenter<RecorderContract.RecorderVi
     @Override
     public void takeView(RecorderContract.RecorderView view) {
         super.takeView(view);
-        recorder.recorderState().subscribe(view, t -> Log.w(TAG, t));
+        recorder.recorderState().subscribe(view);
 
         view.startRecordingClicked().subscribe(getObserver(recorder::startNew));
         view.stopRecordingClicked().subscribe(getObserver(() -> {

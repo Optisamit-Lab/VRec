@@ -2,9 +2,10 @@ package uppd.com.vrec.ui.fragment;
 
 import android.Manifest;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
 import android.view.View;
 import android.widget.Toast;
 
@@ -52,28 +53,27 @@ public class RecorderFragment extends BaseFragment<FragmentRecorderBinding> impl
 
     @Override
     public void accept(Recorder.RecorderState recorderState) {
-        this.recorderState = recorderState;
+        //noinspection ConstantConditions
+        new Handler(Looper.getMainLooper()).post(() -> {
+            // We need to post this to the next handler loop,
+            // otherwise both pause and resume recording can be sent from the same click
+            this.recorderState = recorderState;
 
-        @StringRes final int btnText;
-
-        switch (recorderState.getState()) {
-            case Recorder.RecorderState.STATE_ERROR:
-                Toast.makeText(getContext(), R.string.msg_recordingError, Toast.LENGTH_SHORT).show();
-                // FALLTHROUGH
-            case Recorder.RecorderState.STATE_IDLE:
-                btnText = R.string.record_start;
-                break;
-            case Recorder.RecorderState.STATE_PAUSED:
-                btnText = R.string.record_resume;
-                break;
-            case Recorder.RecorderState.STATE_RECORDING:
-                btnText = R.string.record_pause;
-                break;
-            default:
-                throw new IllegalArgumentException();
-        }
-
-        binding.btnRec.setText(btnText);
+            switch (recorderState.getState()) {
+                case Recorder.RecorderState.STATE_ERROR:
+                    Toast.makeText(getContext(), R.string.msg_recordingError, Toast.LENGTH_SHORT).show();
+                    // FALLTHROUGH
+                case Recorder.RecorderState.STATE_IDLE:
+                case Recorder.RecorderState.STATE_PAUSED:
+                    binding.btnRec.setActivated(false);
+                    break;
+                case Recorder.RecorderState.STATE_RECORDING:
+                    binding.btnRec.setActivated(true);
+                    break;
+                default:
+                    throw new IllegalArgumentException();
+            }
+        });
     }
 
     @Override
@@ -92,7 +92,8 @@ public class RecorderFragment extends BaseFragment<FragmentRecorderBinding> impl
 
     @Override
     public Observable<?> pauseRecordingClicked() {
-        return RxView.clicks(binding.btnPause);
+        return btnRecClicks
+                .filter(o -> recorderState.getState() == Recorder.RecorderState.STATE_RECORDING);
     }
 
     @Override
