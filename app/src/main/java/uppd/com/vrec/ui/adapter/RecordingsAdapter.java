@@ -3,6 +3,7 @@ package uppd.com.vrec.ui.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,14 +57,18 @@ public class RecordingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         final ViewHolder viewHolder = new ViewHolder(DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.item_recording, parent, false).getRoot());
 
         viewHolder.sendClicks().subscribe(sendClicksSubject);
-        viewHolder.deleteClicks().subscribe(deleteClicksSubject);
+        viewHolder.deleteClicks().subscribe(recording -> new AlertDialog.Builder(context)
+                .setMessage(R.string.msg_cancel_confirm)
+                .setNegativeButton(R.string.btn_delete_no, null)
+                .setPositiveButton(R.string.btn_delete_yes, (dialogInterface, i) -> deleteClicksSubject.onNext(recording))
+                .show());
 
         return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ((ViewHolder)holder).bind(getItem(position));
+        ((ViewHolder) holder).bind(getItem(position));
     }
 
     @Override
@@ -100,7 +105,7 @@ public class RecordingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         notifyItemRemoved(position);
     }
 
-    private static class ViewHolder extends RecyclerView.ViewHolder{
+    private static class ViewHolder extends RecyclerView.ViewHolder {
         private final ItemRecordingBinding binding;
 
         public ViewHolder(View itemView) {
@@ -126,7 +131,7 @@ public class RecordingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     .map(o -> binding.getItem());
         }
 
-        public ObservableSource<? extends Recording> deleteClicks() {
+        public Observable<? extends Recording> deleteClicks() {
             return RxView.clicks(binding.btnDelete)
                     .map(o -> binding.getItem());
         }
