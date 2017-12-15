@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
 import android.support.v7.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.libmailcore.AuthType;
@@ -41,7 +42,6 @@ public class SmtpHelper {
 
         final SMTPSession session = new SMTPSession();
 
-        session.setAuthType(AuthType.AuthTypeSASLPlain);
         session.setConnectionType(Integer.valueOf(prefs.getString(context.getString(R.string.key_smtp_connectionType), Integer.toString(DEFAULT_CONN_TYPE))));
         session.setCheckCertificateEnabled(prefs.getBoolean(context.getString(R.string.key_smtp_checkCertificate), context.getResources().getBoolean(R.bool.pref_smtp_checkCertificate)));
         session.setHostname(prefs.getString(context.getString(R.string.key_smtp_hostName), ""));
@@ -59,6 +59,9 @@ public class SmtpHelper {
 
     @Nullable
     public static String getErrorDescription(MailException e) {
+        if (!TextUtils.isEmpty(e.getLocalizedMessage())) {
+            return e.getLocalizedMessage();
+        }
         return Stream.of(ErrorCode.class.getDeclaredFields())
                 .filter(field -> field.getType() == int.class)
                 .filter(field -> Modifier.isStatic(field.getModifiers()))

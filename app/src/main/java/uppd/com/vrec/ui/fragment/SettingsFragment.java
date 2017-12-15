@@ -201,7 +201,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
             @Override
             public void failed(MailException e) {
                 onPref(R.string.key_smtp_test, pref -> pref.setEnabled(true));
-                e.printStackTrace();
                 final String errorDescription = SmtpHelper.getErrorDescription(e);
                 Toast.makeText(getContext(), errorDescription != null ? errorDescription : getString(R.string.msg_smtp_unknown_error, e.errorCode()), Toast.LENGTH_LONG).show();
             }
