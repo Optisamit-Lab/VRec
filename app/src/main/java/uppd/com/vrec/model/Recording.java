@@ -13,4 +13,5 @@ import lombok.Data;
 public class Recording {
     File file;
     boolean isSent;
+    int duration;
 }

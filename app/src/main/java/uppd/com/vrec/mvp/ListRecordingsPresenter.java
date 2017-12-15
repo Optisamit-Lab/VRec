@@ -1,9 +1,15 @@
 package uppd.com.vrec.mvp;
 
+import android.content.Context;
+import android.media.MediaMetadataRetriever;
+import android.net.Uri;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.File;
+import java.io.FileDescriptor;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -24,10 +30,13 @@ public class ListRecordingsPresenter extends BasePresenter<ListRecordingsContrac
 
     private RecordingsManager recordingsManager;
 
+    private Context context;
+
     @Inject
-    public ListRecordingsPresenter(FileManager fileManager, RecordingsManager recordingsManager) {
+    public ListRecordingsPresenter(FileManager fileManager, RecordingsManager recordingsManager, Context context) {
         this.fileManager = fileManager;
         this.recordingsManager = recordingsManager;
+        this.context = context;
     }
 
     @Override
@@ -44,8 +53,20 @@ public class ListRecordingsPresenter extends BasePresenter<ListRecordingsContrac
 
     private List<Recording> generateRecordingsList() {
         return Stream.of(fileManager.getAllFiles())
-                .map(file -> new Recording(file, recordingsManager.isSent(file)))
+                .map(file -> new Recording(file, recordingsManager.isSent(file), getFileDuration(file)))
                 .collect(Collectors.toList());
+    }
+
+    private int getFileDuration(File file) {
+        final Uri uri = Uri.fromFile(file);
+        final MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+        try {
+            mmr.setDataSource(context, uri);
+        } catch (RuntimeException e) {
+            return 0;
+        }
+        final String durationStr = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+        return durationStr != null ? Math.round(Integer.parseInt(durationStr) / 1000) : 0;
     }
 
     @Override
