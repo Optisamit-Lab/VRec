@@ -25,7 +25,7 @@
     <string name="pref_smtp_port">Port</string>
     <string name="key_smtp_username">smtp_username</string>
     <string name="pref_smtp_username">Username</string>
-    <string name="pref_smtp_test">Test</string>
+    <string name="pref_smtp_test">Test connection</string>
     <string name="key_smtp_test">smtp_test</string>
     <string name="msg_smtp_connection_good">Connection succeeded!</string>
     <string name="msg_smtp_unknown_error">Unknown error (code %d)</string>
@@ -45,4 +45,8 @@
     <string name="action_viewList">View recordings</string>
     <string name="msg_file_sent">File sent</string>
     <string name="msg_sending_file">Sending file…</string>
+    <string name="msg_cancel_confirm">The recording will be deleted</string>
+    <string name="msg_title_cancel_confirm">Cancel?</string>
+    <string name="btn_delete_no">Oops, no</string>
+    <string name="btn_delete_yes">Yes, delete</string>
 </resources>

@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.Toast;
 
@@ -15,6 +16,8 @@ import com.tbruyelle.rxpermissions2.RxPermissions;
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
+import io.reactivex.subjects.PublishSubject;
+import io.reactivex.subjects.Subject;
 import uppd.com.vrec.R;
 import uppd.com.vrec.databinding.FragmentRecorderBinding;
 import uppd.com.vrec.di.ActivityScoped;
@@ -29,6 +32,7 @@ public class RecorderFragment extends BaseFragment<FragmentRecorderBinding> impl
 
     private Recorder.RecorderState recorderState;
     private Observable<Object> btnRecClicks;
+    private Subject<Object> cancelClicks = PublishSubject.create();
 
     @Inject
     public RecorderFragment() {
@@ -45,10 +49,19 @@ public class RecorderFragment extends BaseFragment<FragmentRecorderBinding> impl
         return presenter;
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         btnRecClicks = RxView.clicks(binding.btnRec).share();
+
+        RxView.clicks(binding.btnCancel)
+                .subscribe(click -> new AlertDialog.Builder(getContext())
+                        .setTitle(R.string.msg_title_cancel_confirm)
+                        .setMessage(R.string.msg_cancel_confirm)
+                        .setNegativeButton(R.string.btn_delete_no, null)
+                        .setPositiveButton(R.string.btn_delete_yes, (dialogInterface, i) -> cancelClicks.onNext(click))
+                        .show());
     }
 
     @Override
@@ -115,6 +128,6 @@ public class RecorderFragment extends BaseFragment<FragmentRecorderBinding> impl
 
     @Override
     public Observable<?> cancelRecordingClicked() {
-        return RxView.clicks(binding.btnCancel);
+        return cancelClicks;
     }
 }
