@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">VRec</string>
+    <string name="app_name">Voice to Mail</string>
     <string name="action_settings">Settings</string>
     <string name="record_start">Start</string>
     <string name="record_resume">Resume</string>
