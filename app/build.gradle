@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'io.fabric'
 
 android {
     compileSdkVersion 27
@@ -11,7 +13,7 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         def filesAuthorityValue = applicationId + ".files"
-        manifestPlaceholders = [filesAuthority : filesAuthorityValue]
+        manifestPlaceholders = [filesAuthority: filesAuthorityValue]
         buildConfigField "String", "FILES_AUTHORITY", "\"${filesAuthorityValue}\""
     }
     buildTypes {
@@ -31,7 +33,7 @@ android {
 
 ext {
     supportLibVersion = '27.0.2'
-    daggerVersion  = "2.12"
+    daggerVersion = "2.12"
 }
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -42,7 +44,7 @@ dependencies {
     implementation "com.android.support:recyclerview-v7:$supportLibVersion"
 
     // di
-    implementation"com.google.dagger:dagger-android-support:${daggerVersion}"
+    implementation "com.google.dagger:dagger-android-support:${daggerVersion}"
     annotationProcessor "com.google.dagger:dagger-android-processor:${daggerVersion}"
     annotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
 
@@ -64,6 +66,12 @@ dependencies {
 
     // event bus
     implementation 'org.greenrobot:eventbus:3.1.1'
+
+    // Firebase
+    implementation('com.crashlytics.sdk.android:crashlytics:2.7.1@aar') {
+        transitive = true
+    }
+    implementation 'com.google.firebase:firebase-core:11.4.2'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
