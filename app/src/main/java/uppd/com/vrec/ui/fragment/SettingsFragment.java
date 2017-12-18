@@ -10,6 +10,7 @@ import android.support.v7.preference.EditTextPreference;
 import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
+import android.support.v7.preference.PreferenceGroup;
 import android.support.v7.preference.PreferenceScreen;
 import android.view.KeyEvent;
 import android.view.View;
@@ -63,14 +64,14 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
         setRootPreferences();
     }
 
-    private Iterator<Preference> getPrefsIterator(PreferenceScreen preferenceScreen) {
+    private Iterator<Preference> getPrefsIterator(PreferenceGroup preferenceGroup) {
         return new Iterator<Preference>() {
             int itemsTaken = 0;
             Iterator<Preference> childIterator = null;
 
             @Override
             public boolean hasNext() {
-                return preferenceScreen.getPreferenceCount() > itemsTaken;
+                return preferenceGroup.getPreferenceCount() > itemsTaken;
             }
 
             @Override
@@ -83,9 +84,9 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
                     }
                     return next;
                 }
-                final Preference pref = preferenceScreen.getPreference(itemsTaken);
-                if (pref instanceof PreferenceScreen) {
-                    final Iterator<Preference> childIterator = getPrefsIterator((PreferenceScreen) pref);
+                final Preference pref = preferenceGroup.getPreference(itemsTaken);
+                if (pref instanceof PreferenceGroup) {
+                    final Iterator<Preference> childIterator = getPrefsIterator((PreferenceGroup) pref);
                     if (childIterator.hasNext()) {
                         this.childIterator = childIterator;
                     } else {

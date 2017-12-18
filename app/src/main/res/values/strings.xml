@@ -56,4 +56,10 @@
     <string name="key_storeTo">storeTo</string>
     <string name="pref_storeTo_external">SD card</string>
     <string name="pref_storeTo_internal">Internal storage</string>
+    <string name="prefCategory_email">Email</string>
+    <string name="prefCategory_other">Other</string>
+    <string name="key_emailSubject">emailSubject</string>
+    <string name="pref_emailSubject">Email subject</string>
+    <string name="key_emailBody">emailBody</string>
+    <string name="pref_emailBody">Email body</string>
 </resources>

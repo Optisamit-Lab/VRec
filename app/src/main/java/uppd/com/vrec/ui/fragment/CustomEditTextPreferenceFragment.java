@@ -38,6 +38,10 @@ public class CustomEditTextPreferenceFragment extends EditTextPreferenceDialogFr
             editText.setInputType(InputType.TYPE_CLASS_TEXT);
         } else if (key.equals(getString(R.string.key_smtp_email)) || key.equals(getString(R.string.key_targetEmail))) {
             editText.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        } else if (key.equals(getString(R.string.key_emailSubject))) {
+            editText.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_SUBJECT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+        } else if (key.equals(getString(R.string.key_emailBody))) {
+            editText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         }
         editText.setSelectAllOnFocus(true);
     }

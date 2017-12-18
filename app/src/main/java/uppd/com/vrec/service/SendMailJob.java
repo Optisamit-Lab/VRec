@@ -3,9 +3,10 @@ package uppd.com.vrec.service;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
+import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
 
 import com.birbit.android.jobqueue.Job;
@@ -97,14 +98,30 @@ class SendMailJob extends Job {
         final MessageHeader header = new MessageHeader();
         header.setFrom(getSenderAddress());
         header.setTo(getTargetAddress());
-        header.setSubject(getApplicationContext().getString(R.string.email_subject));
+        header.setSubject(getSubject());
 
         final MessageBuilder builder = new MessageBuilder();
         builder.addAttachment(createAttachment());
         builder.setHeader(header);
-        builder.setTextBody(getApplicationContext().getString(R.string.email_body));
+        builder.setTextBody(getEmailBody());
 
         return builder.data();
+    }
+
+    @NonNull
+    private String getEmailBody() {
+        return getStringPreference(R.string.key_emailBody, R.string.email_body);
+    }
+
+    @NonNull
+    private String getSubject() {
+        return getStringPreference(R.string.key_emailSubject, R.string.email_subject);
+    }
+
+    @NonNull
+    private String getStringPreference(@StringRes int keyRes, @StringRes int defValueRes) {
+        final Context context = getApplicationContext();
+        return PreferenceManager.getDefaultSharedPreferences(context).getString(context.getString(keyRes), context.getString(defValueRes));
     }
 
     private List<Address> getTargetAddress() {
