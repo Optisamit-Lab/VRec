@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
-apply plugin: 'io.fabric'
 
 android {
     compileSdkVersion 27
@@ -24,11 +23,12 @@ android {
     }
     dataBinding {
         enabled = true
-    }
+    }/*
     compileOptions {
         targetCompatibility 1.8
         sourceCompatibility 1.8
-    }
+    }*/
+    namespace "uppd.com.vrec"
 }
 
 ext {
