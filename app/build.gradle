@@ -31,6 +31,17 @@ android {
         targetCompatibility 1.8
         sourceCompatibility 1.8
     }*/
+    signingConfigs {
+        release {
+            def alias = System.getenv("KEY_ALIAS")
+            if (alias != null) {
+                storeFile file("../release.keystore")
+                storePassword System.getenv("STORE_PASSWORD")
+                keyAlias alias
+                keyPassword System.getenv("KEY_PASSWORD")
+            }
+        }
+    }
     namespace "uppd.com.vrec"
 }
 
