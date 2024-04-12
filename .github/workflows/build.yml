@@ -1,11 +1,12 @@
 name: Minimal Android CI Workflow
 
 on:
-  push #:
+  - push #:
     #branches:
     #  - master
     #paths:
     #  - 'app/version.properties'
+  - workflow_dispatch
 
 jobs:
   apk:

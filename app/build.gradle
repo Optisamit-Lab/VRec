@@ -15,10 +15,22 @@ android {
         manifestPlaceholders = [filesAuthority: filesAuthorityValue]
         buildConfigField "String", "FILES_AUTHORITY", "\"${filesAuthorityValue}\""
     }
+    signingConfigs {
+        release {
+            def alias = System.getenv("KEY_ALIAS")
+            if (alias != null) {
+                storeFile file("../release.keystore")
+                storePassword System.getenv("STORE_PASSWORD")
+                keyAlias alias
+                keyPassword System.getenv("KEY_PASSWORD")
+            }
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     buildFeatures {
@@ -31,17 +43,6 @@ android {
         targetCompatibility 1.8
         sourceCompatibility 1.8
     }*/
-    signingConfigs {
-        release {
-            def alias = System.getenv("KEY_ALIAS")
-            if (alias != null) {
-                storeFile file("../release.keystore")
-                storePassword System.getenv("STORE_PASSWORD")
-                keyAlias alias
-                keyPassword System.getenv("KEY_PASSWORD")
-            }
-        }
-    }
     namespace "uppd.com.vrec"
 }
 
