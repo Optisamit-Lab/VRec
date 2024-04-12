@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          package="uppd.com.vrec">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="uppd.com.vrec">
 
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name=".App"
@@ -18,14 +18,15 @@
         tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name=".ui.activity.MainActivity"
+            android:exported="true"
             android:label="@string/app_name">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activity.SettingsActivity"/>
-        <activity android:name=".ui.activity.ListRecordingsActivity"/>
+        <activity android:name=".ui.activity.SettingsActivity" />
+        <activity android:name=".ui.activity.ListRecordingsActivity" />
 
         <provider
             android:name=".service.VRecFileProvider"
@@ -34,7 +35,7 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"/>
+                android:resource="@xml/file_paths" />
         </provider>
     </application>
 
