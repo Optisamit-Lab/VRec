@@ -3,18 +3,34 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdk 33
-    defaultConfig {
-        applicationId "uppd.com.vrec"
-        minSdkVersion 24
-        targetSdkVersion 33
-        versionCode 1
-        versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
-        def filesAuthorityValue = applicationId + ".files"
-        manifestPlaceholders = [filesAuthority: filesAuthorityValue]
-        buildConfigField "String", "FILES_AUTHORITY", "\"${filesAuthorityValue}\""
+    def versionPropsFile = file('version.properties')
+
+    if (versionPropsFile.canRead()) {
+        Properties versionProps = new Properties()
+
+        versionProps.load(new FileInputStream(versionPropsFile))
+        def versionMajor = versionProps['VERSION_MAJOR']
+        def versionMinor = versionProps['VERSION_MINOR']
+        def versionPatch = versionProps['VERSION_PATCH']
+        def vCode = versionProps['VERSION_CODE'].toInteger()
+
+        defaultConfig {
+            applicationId "uppd.com.vrec"
+            minSdkVersion 24
+            targetSdkVersion 33
+            versionCode  vCode
+            versionName  "${versionMajor}.${versionMinor}.${versionPatch}"
+            testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+            def filesAuthorityValue = applicationId + ".files"
+            manifestPlaceholders = [filesAuthority: filesAuthorityValue]
+            buildConfigField "String", "FILES_AUTHORITY", "\"${filesAuthorityValue}\""
+        }
+    } else {
+        throw new GradleException("Could not read version.properties!")
     }
+
     signingConfigs {
         release {
             def alias = System.getenv("KEY_ALIAS")
