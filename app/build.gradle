@@ -62,6 +62,51 @@ android {
     namespace "uppd.com.vrec"
 }
 
+tasks.register('bumpVersion') {
+    def versionPropsFile = file('version.properties')
+
+    if (versionPropsFile.canRead()) {
+        Properties versionProps = new Properties()
+
+        versionProps.load(new FileInputStream(versionPropsFile))
+        def versionMajor = versionProps['VERSION_MAJOR']
+        def versionMinor = versionProps['VERSION_MINOR']
+        def versionPatch = versionProps['VERSION_PATCH']
+        def vCode = versionProps['VERSION_CODE'].toInteger()
+
+        versionPatch = versionPatch.toInteger() + 1
+        vCode += 1
+        final vName = "v${versionMajor}.${versionMinor}.${versionPatch}"
+
+        versionProps['VERSION_CODE'] = vCode.toString()
+        versionProps['VERSION_PATCH'] = versionPatch.toString()
+
+        versionProps.store(versionPropsFile.newWriter(), null)
+
+        exec {
+            executable "git"
+            args 'add', '.'
+        }
+        exec {
+            executable "git"
+            args "commit", "-m", "Bump for $vName"
+            standardOutput = new ByteArrayOutputStream()  // Captures and suppresses output
+        }
+        exec {
+            executable "git"
+            args "tag", vName
+        }
+        exec {
+            executable "git"
+            args "push", "origin", vName
+        }
+
+        println vName
+    } else {
+        throw new GradleException("Could not read version.properties!")
+    }
+}
+
 ext {
     supportLibVersion = '27.0.2'
     daggerVersion = "2.12"
