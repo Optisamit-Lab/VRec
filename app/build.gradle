@@ -98,7 +98,7 @@ tasks.register('bumpVersion') {
         }
         exec {
             executable "git"
-            args "push", "origin", "main", "--tags"
+            args "push", "origin", "HEAD", "--tags"
         }
 
         def file = new File("../version_name.txt")
