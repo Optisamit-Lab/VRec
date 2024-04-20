@@ -34,6 +34,7 @@ android {
     signingConfigs {
         release {
             def alias = System.getenv("KEY_ALIAS")
+            println "Keystore path: ${file("../release.keystore")}"
             if (alias != null) {
                 storeFile file("../release.keystore")
                 storePassword System.getenv("STORE_PASSWORD")
@@ -101,6 +102,7 @@ tasks.register('bumpVersion') {
         }
 
         def file = new File("../version_name.txt")
+        println ("Version name path: ${file("../version_name.txt")}")
         file.text = vName
         println file.absolutePath
     } else {
