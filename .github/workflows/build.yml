@@ -27,12 +27,12 @@ jobs:
         run: echo "${{ secrets.STORE_FILE }}" | base64 -d > release.keystore
       - name: Configure Git
         run: |
-          git config --local user.email "tgehrs@gmail.com"
+          git config --local user.email "optisamit@gmail.com"
           git config --local user.name "Build action"
       - name: Bump version
         id: bump_version
         run: |
-          VERSION_NAME=$(./gradlew bumpVersion --quiet)
+          VERSION_NAME=$(cat version_name.txt)
           echo "version_name=$VERSION_NAME"
           echo "version_name=$VERSION_NAME" >> "$GITHUB_OUTPUT"
       - name: Build APK

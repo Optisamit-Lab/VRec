@@ -90,7 +90,6 @@ tasks.register('bumpVersion') {
         exec {
             executable "git"
             args "commit", "-m", "Bump for $vName"
-            standardOutput = new ByteArrayOutputStream()  // Captures and suppresses output
         }
         exec {
             executable "git"
@@ -101,7 +100,7 @@ tasks.register('bumpVersion') {
             args "push", "origin", vName
         }
 
-        println vName
+        new File("../version_name.txt").text = versionName
     } else {
         throw new GradleException("Could not read version.properties!")
     }
