@@ -101,10 +101,10 @@ tasks.register('bumpVersion') {
             args "push", "origin", "HEAD", "--tags"
         }
 
-        def file = new File("../version_name.txt")
+        def f = new File("../version_name.txt")
         println ("Version name path: ${file("../version_name.txt")}")
-        file.text = vName
-        println file.absolutePath
+        f.text = vName
+        println f.absolutePath
     } else {
         throw new GradleException("Could not read version.properties!")
     }
