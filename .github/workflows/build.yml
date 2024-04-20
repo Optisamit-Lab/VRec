@@ -25,6 +25,10 @@ jobs:
           distribution: 'adopt'
       - name: Decode Keystore File
         run: echo "${{ secrets.STORE_FILE }}" | base64 -d > release.keystore
+      - name: Configure Git
+        run: |
+          git config --local user.email "tgehrs@gmail.com"
+          git config --local user.name "Build action"
       - name: Bump version
         id: bump_version
         run: |
