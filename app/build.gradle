@@ -100,7 +100,7 @@ tasks.register('bumpVersion') {
             args "push", "origin", vName
         }
 
-        new File("version_name.txt").text = vName
+        new File("../version_name.txt").text = vName
     } else {
         throw new GradleException("Could not read version.properties!")
     }
