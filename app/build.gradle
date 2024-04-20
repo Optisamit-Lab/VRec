@@ -34,7 +34,6 @@ android {
     signingConfigs {
         release {
             def alias = System.getenv("KEY_ALIAS")
-            println "Keystore path: ${file("../release.keystore")}"
             if (alias != null) {
                 storeFile file("../release.keystore")
                 storePassword System.getenv("STORE_PASSWORD")
@@ -101,10 +100,7 @@ tasks.register('bumpVersion') {
             args "push", "origin", "HEAD", "--tags"
         }
 
-        def f = new File("../version_name.txt")
-        println ("Version name path: ${file("../version_name.txt")}")
-        f.text = vName
-        println f.absolutePath
+        file("../version_name.txt").text = vName
     } else {
         throw new GradleException("Could not read version.properties!")
     }
