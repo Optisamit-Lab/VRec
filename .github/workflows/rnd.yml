@@ -1,0 +1,22 @@
+name: Random Failure Workflow
+
+on: [push, workflow_dispatch]
+
+jobs:
+  random-failure-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Randomly fail
+        run: |
+          # Generate a random number between 0 and 1
+          RND=$(($RANDOM % 2))
+          echo "Random number: $RND"
+          # Fail if the random number is 0
+          if [ "$RND" -eq 0 ]; then
+            echo "This run will fail"
+            #exit 1
+          else
+            echo "This run will succeed"
+          fi
