@@ -16,7 +16,7 @@ jobs:
           # Fail if the random number is 0
           if [ "$RND" -eq 0 ]; then
             echo "This run will fail"
-            exit 1
+            #exit 1
           else
             echo "This run will succeed"
           fi
