@@ -11,6 +11,10 @@ on:
       ENV-NAME:
         required: false
         type: string
+      VERSION-NAME:
+        required: false
+        type: string
+        description: "APK's version name to use if bumpVersion task is not defined or fails"
     secrets:
       STORE_FILE:
         required: false
@@ -95,8 +99,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ needs.apk.outputs.new-version }}
-          release_name: Release ${{ needs.apk.outputs.new-version }}
+          tag_name: ${{ needs.apk.outputs.new-version != '' && needs.apk.outputs.new-version || inputs.VERSION-NAME }}
+          release_name: ${{ needs.apk.outputs.new-version != '' && needs.apk.outputs.new-version || inputs.VERSION-NAME }}
       - name: Set up repository name
         run: echo "REPO_NAME=$(echo $GITHUB_REPOSITORY | cut -d '/' -f 2)" >> $GITHUB_ENV
       - name: Upload Release APK
