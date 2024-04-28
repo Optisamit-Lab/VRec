@@ -13,6 +13,6 @@ jobs:
     name: Generate APK
     uses: ./.github/workflows/build_general.yml
     with:
-      BUILD-VARIANT: release
-      #ENV-NAME: test
+      #BUILD-VARIANT: release
+      ENV-NAME: test
     secrets: inherit
