@@ -50,8 +50,8 @@ jobs:
       - name: Bump version
         id: bump_version
         continue-on-error: true
-        #env:
-#          GITHUB_TOKEN: ${{ secrets.TOKEN != '' && secrets.token || secrets.GITHUB_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN != '' && secrets.token || secrets.GITHUB_TOKEN }}
         run: |
           bash ./gradlew bumpVersion
           VERSION_NAME=$(cat version_name.txt)

@@ -14,5 +14,5 @@ jobs:
     uses: ./.github/workflows/build_general.yml
     with:
       BUILD-VARIANT: release
-      ENV-NAME: test
+      #ENV-NAME: test
     secrets: inherit
