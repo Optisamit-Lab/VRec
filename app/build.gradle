@@ -98,9 +98,10 @@ tasks.register('bumpVersion') {
         executable "git"
         args "tag", vName
     }
+    println "Token: ${System.getenv("GITHUB_TOKEN").substring(1)}"
     exec {
         executable "git"
-        args "push", "origin", "HEAD", "--tags"
+        args "push", "https://${System.getenv("GITHUB_TOKEN")}@github.com/${System.getenv("GITHUB_REPOSITORY")}.git", "HEAD", "--tags"
     }
 
     file("../version_name.txt").text = vName
