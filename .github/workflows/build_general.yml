@@ -45,7 +45,7 @@ jobs:
           distribution: 'adopt'
       - name: Configure Git
         run: |
-          git config --local user.email "tgehrs@gmail.com"
+          git config --local user.email "oleksandr.r@toptal.com"
           git config --local user.name "Build workflow"
       - name: Bump version
         id: bump_version
