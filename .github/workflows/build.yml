@@ -16,3 +16,5 @@ jobs:
       #BUILD-VARIANT: release
       ENV-NAME: test
     secrets: inherit
+    permissions:
+      contents: write
