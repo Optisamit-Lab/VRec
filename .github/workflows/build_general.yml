@@ -35,6 +35,8 @@ jobs:
     environment: ${{ inputs.ENV-NAME }}
     outputs:
       new-version: ${{ steps.bump_version.outputs.version_name }}
+    permissions:
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v3
