@@ -94,7 +94,7 @@ tasks.register('bumpVersion') {
         args "tag", vName
     }
     exec {
-        executable "git"
+        executable "git" // push
         args "push", "https://${System.getenv("GITHUB_TOKEN")}@github.com/${System.getenv("GITHUB_REPOSITORY")}.git", "HEAD", "--tags"
     }
 
