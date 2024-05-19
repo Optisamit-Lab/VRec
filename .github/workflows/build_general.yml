@@ -47,8 +47,8 @@ jobs:
           distribution: 'adopt'
       - name: Configure Git
         run: |
-          git config --local user.email "<>"
-          git config --local user.name "Build workflow"
+          git config --local user.email "optisamit@gmail.com"
+          git config --local user.name "optisamit"
       - name: Bump version
         id: bump_version
         continue-on-error: true
