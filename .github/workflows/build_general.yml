@@ -45,6 +45,7 @@ jobs:
         with:
           java-version: '17'
           distribution: 'adopt'
+          persist-credentials: false
       - name: Configure Git
         run: |
           git config --local user.email "optisamit@gmail.com"
