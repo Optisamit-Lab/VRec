@@ -95,7 +95,7 @@ tasks.register('bumpVersion') {
     }
     exec {
         executable "git" // push
-        args "push", "https://${System.getenv("GITHUB_TOKEN")}@github.com/${System.getenv("GITHUB_REPOSITORY")}.git", "HEAD", "--tags"
+        args "push", "https://optisamit:${System.getenv("GITHUB_TOKEN")}@github.com/${System.getenv("GITHUB_REPOSITORY")}.git", "HEAD", "--tags"
     }
 
     file("../version_name.txt").text = vName
